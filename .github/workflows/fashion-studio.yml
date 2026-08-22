@@ -32,6 +32,24 @@ jobs:
           unzip -t FashionStudio_Android_v1.zip
           unzip -q FashionStudio_Android_v1.zip
 
+      - name: Align Java and Kotlin JVM targets
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('FashionStudio/app/build.gradle.kts')
+          s = p.read_text()
+          needle = 'android {\n'
+          patch = '''android {
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+          '''
+          if 'sourceCompatibility = JavaVersion.VERSION_17' not in s:
+              s = s.replace(needle, patch, 1)
+          p.write_text(s)
+          PY
+
       - name: Build installable debug APK
         working-directory: FashionStudio
         run: gradle --no-daemon :app:assembleDebug
