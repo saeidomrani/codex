@@ -28,16 +28,22 @@ jobs:
       - name: Unpack project
         run: unzip -q MosquitoSmash-source.zip
 
+      - name: Apply Fun V2
+        run: |
+          cp v2/GameView.java mosquito_cam_game/app/src/main/java/com/saeid/mosquitosmash/GameView.java
+          sed -i 's/versionCode 1/versionCode 2/' mosquito_cam_game/app/build.gradle
+          sed -i "s/versionName '1.0'/versionName '2.0'/" mosquito_cam_game/app/build.gradle
+
       - name: Build installable debug APK
         working-directory: mosquito_cam_game
         run: gradle --no-daemon :app:assembleDebug
 
       - name: Prepare artifact
-        run: cp mosquito_cam_game/app/build/outputs/apk/debug/app-debug.apk MosquitoSmash.apk
+        run: cp mosquito_cam_game/app/build/outputs/apk/debug/app-debug.apk MosquitoSmash-FunV2.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MosquitoSmash-apk
-          path: MosquitoSmash.apk
+          name: MosquitoSmash-FunV2-apk
+          path: MosquitoSmash-FunV2.apk
           if-no-files-found: error
