@@ -25,11 +25,6 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Ensure Android SDK 35
-        run: |
-          yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
       - name: Unpack project
         run: unzip -q MosquitoSmash-source.zip
 
