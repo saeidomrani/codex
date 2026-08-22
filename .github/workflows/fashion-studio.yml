@@ -3,6 +3,8 @@ name: Build Fashion Studio APK
 on:
   push:
     branches: [ fashion-studio-build ]
+  pull_request:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
