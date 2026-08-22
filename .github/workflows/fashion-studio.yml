@@ -32,10 +32,11 @@ jobs:
           unzip -t FashionStudio_Android_v1.zip
           unzip -q FashionStudio_Android_v1.zip
 
-      - name: Align Java and Kotlin JVM targets
+      - name: Apply build fixes
         run: |
           python3 - <<'PY'
           from pathlib import Path
+
           p = Path('FashionStudio/app/build.gradle.kts')
           s = p.read_text()
           needle = 'android {\n'
@@ -47,6 +48,22 @@ jobs:
           '''
           if 'sourceCompatibility = JavaVersion.VERSION_17' not in s:
               s = s.replace(needle, patch, 1)
+          p.write_text(s)
+
+          p = Path('FashionStudio/app/src/main/java/com/openai/fashionstudio/ui/DesignCanvas.kt')
+          s = p.read_text()
+          if 'import androidx.compose.ui.graphics.drawscope.drawIntoCanvas' not in s:
+              s = s.replace(
+                  'import androidx.compose.ui.graphics.drawscope.Stroke\n',
+                  'import androidx.compose.ui.graphics.drawscope.Stroke\nimport androidx.compose.ui.graphics.drawscope.drawIntoCanvas\n'
+              )
+          p.write_text(s)
+
+          p = Path('FashionStudio/app/src/main/java/com/openai/fashionstudio/ui/DesignerScreen.kt')
+          s = p.read_text().replace(
+              'import androidx.compose.ui.draw.border',
+              'import androidx.compose.foundation.border'
+          )
           p.write_text(s)
           PY
 
