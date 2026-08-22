@@ -25,8 +25,12 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Unpack project
-        run: unzip -q FashionStudio_Android_v1.zip
+      - name: Rebuild and verify source archive
+        run: |
+          cat fashionstudio_chunks/chunk_* > FashionStudio_Android_v1.zip.b64
+          base64 -d FashionStudio_Android_v1.zip.b64 > FashionStudio_Android_v1.zip
+          unzip -t FashionStudio_Android_v1.zip
+          unzip -q FashionStudio_Android_v1.zip
 
       - name: Build installable debug APK
         working-directory: FashionStudio
